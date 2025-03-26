@@ -6,6 +6,7 @@ import 'package:flutter_application_1/transers/on_another_bank_card.dart';
 import 'package:flutter_application_1/transers/to_top_up_card.dart';
 import 'package:flutter_application_1/transers/transfer_to_business_or_individual.dart';
 import 'package:flutter_application_1/transers/transfer_to_phone_number.dart';
+import 'package:flutter_application_1/transers/utp_bottom_dialog.dart';
 import 'package:flutter_svg/svg.dart';
 
 class TransfersAll extends StatelessWidget {
@@ -219,13 +220,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'UPT международный перевод',
           subtitle: 'Отправить или получить',
             onTap: () {
-            print("пока нет экарана");
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("пока нет экарана")));
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => SecondScreen()),
-            //   );
+              showUTPBottomSheet(context);           
           },
         ),
         _buildListItem(
