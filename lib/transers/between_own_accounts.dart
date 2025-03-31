@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/transers/bottom_own_card.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:flutter_application_1/transers/from_transfer_bottom_dialog.dart';
 
 class TransferOwnAccountScreen extends StatelessWidget {
   @override
@@ -128,7 +128,8 @@ class TransferOwnAccountScreen extends StatelessWidget {
       ),
       child: InkWell(
         onTap: () => {
-          FromTransferBottomDialog().showCustomBottomSheet(context, accounts)
+         // FromTransferBottomDialog().showCustomBottomSheet(context, accounts)
+          showCustomOwnCardBottomSheet(context, accounts)
         },
         child: Row(
         children: [

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/my_bank.dart';
+import 'package:flutter_application_1/settings.dart';
 import 'package:flutter_application_1/transers/between_own_accounts.dart';
 import 'package:flutter_application_1/transers/currency_coonversion.dart';
 import 'package:flutter_application_1/transers/on_another_bank_card.dart';
@@ -12,7 +13,14 @@ import 'package:flutter_application_1/transers/utp_bottom_dialog.dart';
 import 'package:flutter_svg/svg.dart';
 
 class TransfersAll extends StatelessWidget {
-  const TransfersAll({Key? key}) : super(key: key);
+  const TransfersAll({
+    Key? key,
+    required this.hideBottomNav,
+    required this.showBottomNav,
+  }) : super(key: key);
+  final VoidCallback hideBottomNav;
+  final VoidCallback showBottomNav;
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +30,10 @@ class TransfersAll extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home:  TransfersAllScreen(),
+      home:  TransfersAllScreen(
+         hideBottomNav: hideBottomNav,
+        showBottomNav: showBottomNav,
+      ),
     );
   }
 }
@@ -30,6 +41,18 @@ class TransfersAll extends StatelessWidget {
 
 
 class TransfersAllScreen extends StatefulWidget {
+    final VoidCallback hideBottomNav;
+    final VoidCallback showBottomNav;
+    int _currentIndex = 0;
+
+    
+     TransfersAllScreen({
+      Key? key,
+      required this.hideBottomNav,
+      required this.showBottomNav,
+    }) : super(key: key);
+
+
   @override
   _TransfersAllScreenState createState() => _TransfersAllScreenState();
 }
@@ -39,18 +62,30 @@ class _TransfersAllScreenState extends State<TransfersAllScreen> {
   bool isPinEnabled = true;
   bool isScreenshotEnabled = true;
 
+  //   @override
+  // void initState() {
+  //   super.initState();
+  //   widget.hideBottomNav(); // Hide bottom navigation on screen open
+  // }
+
+  // @override
+  // void dispose() {
+  //   widget.showBottomNav(); // Show bottom navigation when leaving the screen
+  //   super.dispose();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // Handle back button press
-            Navigator.pop(context);
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     // Handle back button press
+        //     //Navigator.pop(context);
+        //   },
+        // ),
         title: Text('Переводы'),
         centerTitle: true,
         actions: [
@@ -58,12 +93,19 @@ class _TransfersAllScreenState extends State<TransfersAllScreen> {
             icon: Icon(Icons.menu),
             onPressed: () {
               // Handle menu button press
+               Navigator.push(
+                context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()),
+              );
             },
           ),
         ],
        
       ),
-      body: TransfersScreen()
+      body: TransfersScreen(
+        hideBottomNav: widget.hideBottomNav,
+        showBottomNav: widget.showBottomNav,
+      )
     );
   }
 
@@ -72,7 +114,15 @@ class _TransfersAllScreenState extends State<TransfersAllScreen> {
 
 
   class TransfersScreen extends StatefulWidget {
-  const TransfersScreen({Key? key}) : super(key: key);
+
+    final VoidCallback hideBottomNav;
+    final VoidCallback showBottomNav;
+
+    const TransfersScreen({
+      Key? key,
+      required this.hideBottomNav,
+      required this.showBottomNav,
+    }) : super(key: key);
 
   @override
   State<TransfersScreen> createState() => _TransfersScreenState();
@@ -117,7 +167,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
               builder: (context) {
                 switch (_selectedIndex) {
                   case 0:
-                    return _buildAllTransfers();
+                    return _buildAllTransfers(widget.hideBottomNav);
                   case 1:
                     return _buildFrequentTransfers();
                   case 2:
@@ -134,7 +184,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
   }
 
   /// Виджет "Все"
-  Widget _buildAllTransfers() {
+  Widget _buildAllTransfers(VoidCallback hideBottomNav) {
     return ListView(
       children: [
         _buildListItem(
@@ -142,6 +192,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'Между своими счетами',
           subtitle: 'Картами и депозитами',
            onTap: () {
+            hideBottomNav();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransferOwnAccountScreen()),
@@ -153,6 +204,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'На карту любого банка',
           subtitle: 'Клиенту RBK, банков РК и зарубежных',
            onTap: () {
+            hideBottomNav();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransfTAntherankCardScreen()),
@@ -164,6 +216,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'По номеру телефона',
           subtitle: 'Клиенту RBK, Halyk Bank, Altyn Bank и др.',
           onTap: () {
+            hideBottomNav();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransferToPhoneumberScreen()),
@@ -175,6 +228,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'Конвертация валют',
           subtitle: 'Льготный курс от 10 000\$',
           onTap: () {
+            hideBottomNav();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CurrencyConversionScreen()),
@@ -186,6 +240,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'Пополнение карты',
           subtitle: 'Картой другого банка',
           onTap: () {
+            hideBottomNav();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ToTopUpCardScreen()),
@@ -197,6 +252,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'На счет юр. и физ. лицам',
           subtitle: 'В любой банк РК',
           onTap: () {
+            hideBottomNav();
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransferToBusinesOrIndividualScreen()),
@@ -208,7 +264,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'Swift',
           subtitle: 'По всему миру',
           onTap: () {
-            
+            hideBottomNav();
               Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SwiftTransferScreen()),
@@ -220,6 +276,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'UPT международный перевод',
           subtitle: 'Отправить или получить',
             onTap: () {
+              hideBottomNav();
               showUTPBottomSheet(context);           
           },
         ),
@@ -228,6 +285,7 @@ class _TransfersScreenState extends State<TransfersScreen> {
           title: 'Запрос перевода',
           subtitle: 'По номеру перевода',
             onTap: () {
+              hideBottomNav();
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => TransfRequestScreen()),
@@ -329,14 +387,14 @@ class _TransfersScreenState extends State<TransfersScreen> {
           padding: const EdgeInsets.symmetric(vertical: 12),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? Colors.blueAccent : Colors.white,
-            border: Border.all(color: Colors.blueAccent),
+            color: isSelected ? Color(0xFF5659FE) : Colors.white,
+            border: Border.all(color: Color(0xFF5659FE)),
             borderRadius: BorderRadius.circular(25),
           ),
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.blueAccent,
+              color: isSelected ? Colors.white : Color(0xFF323643),
               fontWeight: FontWeight.bold,
             ),
           ),

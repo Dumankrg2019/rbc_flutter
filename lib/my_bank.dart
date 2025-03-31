@@ -5,6 +5,7 @@ import 'package:flutter_application_1/dialog_error.dart';
 import 'package:flutter_application_1/dialog_face_id.dart';
 import 'package:flutter_application_1/settings.dart';
 import 'package:flutter_application_1/transers/transfers_all.dart';
+import 'package:flutter_svg/svg.dart';
 
 
 
@@ -24,20 +25,140 @@ class MyBankApp extends StatelessWidget {
   }
 }
 
-class MyBankHomeScreen extends StatelessWidget {
+
+
+class MyBankHomeScreen extends StatefulWidget  {
   const MyBankHomeScreen({Key? key}) : super(key: key);
+
+    @override
+  _MyBankHomeScreenState createState() => _MyBankHomeScreenState();
+}
+
+
+class _MyBankHomeScreenState extends State<MyBankHomeScreen> {
+  int _currentIndex = 0;
+  bool _showBottomNav = true;
+  
+
+final List<String> _titles = ['Мой банк', 'Переводы', 'Платежи', 'Услуги'];
+
+  void toggleBottomNav(bool show) {
+    setState(() {
+      _showBottomNav = show;
+    });
+  }
+
+ List<Widget> _screens = [
+    HomeContent(),
+    TransfersAll(
+      hideBottomNav: () => {},
+      showBottomNav: () =>{}
+    ),
+    
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+      _screens = [
+          HomeContent(),
+      TransfersAll(
+        hideBottomNav: () => toggleBottomNav(false), 
+        showBottomNav: () => toggleBottomNav(true)
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      backgroundColor: Colors.white,
+      bottomNavigationBar: Container(
+        clipBehavior: Clip.antiAlias,
+          height: 96,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+          // Для примера можно добавить лёгкую тень:
+            boxShadow: const [
+            BoxShadow(
+                color: Colors.black12, // полупрозрачный чёрный для мягкой тени
+                blurRadius: 10,        // степень размытия
+                offset: Offset(0, -4), // смещение вверх (т.к. тень идёт снизу)
+              ),
+            ],
+           ),
+        child: BottomNavigationBar(          
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Colors.white,
+            selectedItemColor: Color(0xFF5659FE),
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: true, // Чтобы подписи были и у неактивных
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+                _showBottomNav = true;
+              });
+            },
+            items:  [
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  "assets/images/home.svg",
+                    colorFilter: ColorFilter.mode(
+                      _currentIndex == 0 ? Color(0xFF5659FE) : Colors.grey,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                label: 'Мой банк',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  "assets/images/transfer_menu.svg",
+                    colorFilter: ColorFilter.mode(
+                      _currentIndex == 1 ? Color(0xFF5659FE) : Colors.grey,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                label: 'Переводы',
+              ),
+              // BottomNavigationBarItem(
+              //   icon: SvgPicture.asset(
+              //     "assets/images/wallet_menu.svg",
+              //       colorFilter: ColorFilter.mode(
+              //         _currentIndex == 2 ? Color(0xFF5659FE) : Colors.grey,
+              //         BlendMode.srcIn,
+              //       ),
+              //     ),
+              //   label: 'Платежи',
+              // ),
+              // BottomNavigationBarItem(
+              //   icon: SvgPicture.asset(
+              //     "assets/images/services_menu.svg",
+              //       colorFilter: ColorFilter.mode(
+              //         _currentIndex == 3 ? Color(0xFF5659FE) : Colors.grey,
+              //         BlendMode.srcIn,
+              //       ),
+              //     ),
+              //   label: 'Услуги',
+              // ),
+            ],
+          ),
+          
+       
+      ),
+      appBar: _currentIndex == 0 ?  AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: Text('Мой банк'),
+        title: Text(_titles[_currentIndex]),
         centerTitle: true,
         actions: [
           IconButton(
@@ -51,8 +172,11 @@ class MyBankHomeScreen extends StatelessWidget {
             },
           ),
         ]
-              ),
-      body: const HomeContent(),
+              ) : null,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
     );
   }
 }
@@ -119,6 +243,7 @@ class HomeContent extends StatelessWidget {
     children: [
       Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           border: Border(
             top: BorderSide(color: Color(0xFFE1E3E8)),
             bottom: BorderSide(color: Color(0xFFE1E3E8)),
@@ -151,6 +276,7 @@ class HomeContent extends StatelessWidget {
             ),
               Container(
               decoration: BoxDecoration(
+                color: Colors.white,
                 border: Border.all(color: Color(0xFFC6CBD4)), // Серый цвет границы
                 borderRadius: BorderRadius.circular(4), // Закругление углов
               ),
@@ -233,6 +359,7 @@ class HomeContent extends StatelessWidget {
     // Removed unused parameter 'isError'
   }) {
         return Container(
+          color: Colors.white,
       width: double.infinity, // Make the container take full screen width
        // Add padding to prevent text from touching edges
       
@@ -313,10 +440,13 @@ class HomeContent extends StatelessWidget {
     return InkWell(    
         onTap: () {
         // Handle button tap
-          Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TransfersAllScreen()),
-          );
+          // Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => TransfersAllScreen(
+          //         hideBottomNav: () => {},
+          //         showBottomNav: () => {},
+          //       )),
+          // );
       },
       child: Container(
         width: double.infinity, // Растягиваем на всю ширину экрана

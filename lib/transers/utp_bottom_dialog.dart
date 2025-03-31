@@ -11,15 +11,16 @@ import 'package:flutter_svg/svg.dart';
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return Container(
+        return SingleChildScrollView(
+          child: Container(
           padding: const EdgeInsets.all(16),
-          height: 220,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(42)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
                ListTile(
                     title: const Text('UTP международный перевод',
@@ -63,6 +64,7 @@ import 'package:flutter_svg/svg.dart';
                   ),              
             ],
           ),
+        )
         );
       },
     );
